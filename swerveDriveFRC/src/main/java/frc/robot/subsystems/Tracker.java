@@ -4,14 +4,18 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Tracker extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
 
-  SwerveDriveOdometry odometry = new SwerveDriveOdometry(Constants.DriveConstants.DRIVE_KINEMATICS, Drive.getInstance().getDriveHeading(), Drive.getInstance().getModulePositions);
+  SwerveDriveOdometry odometry = new SwerveDriveOdometry(Constants.DriveConstants.DRIVE_KINEMATICS, Drive.getInstance().getDriveHeading(), Drive.getInstance().getModulePositions());
   
   private static Tracker instance = new Tracker();
 
@@ -24,7 +28,7 @@ public class Tracker extends SubsystemBase {
   }
 
   public void updatePose(){
-    odometry.update(drive.getDriveHeding(), drive.getModulePositions());
+    odometry.update(drive.getDriveHeading(), drive.getModulePositions());
     field.setRobotPose(odometry.getPoseMeters());
   }
 
@@ -33,17 +37,17 @@ public class Tracker extends SubsystemBase {
   }
 
   public Pose2d getOdometry(){
-    return odometry.getPoseMemters();
+    return odometry.getPoseMeters();
   }
 
   public void resetHeading(){
-    odometry.resetPosition(drive.getDriveHeading(), drive.getModulePositions(), new Pose2d(getOdometry().getTranslatoion(), Rotation2d.fromDegrees(0)));
+    odometry.resetPosition(drive.getDriveHeading(), drive.getModulePositions(), new Pose2d(getOdometry().getTranslation(), Rotation2d.fromDegrees(0)));
   }
 
   public void logData(){
     SmartDashboard.putNumber("pose x", getOdometry().getX());
-    SmartDashboard.putNumber("pose y", getOdometry.getY());
-    SmartDashboard.putNumber("post rot", getOdometry.getRotation().getDegrees());
+    SmartDashboard.putNumber("pose y", getOdometry().getY());
+    SmartDashboard.putNumber("post rot", getOdometry().getRotation().getDegrees());
   }
 
   @Override

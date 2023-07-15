@@ -7,6 +7,9 @@ package frc.robot.commands;
 import frc.robot.Constants;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
+
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -21,11 +24,12 @@ public class DriveTele extends CommandBase {
   private double modifyInputs(double value, boolean isRot){
     if(isRot){
       //deadzone
-      if(Math.abs(value) < 0.15)){
+      if(Math.abs(value) < 0.15){
         value = 0;
       
       }
       return value * Constants.DriveConstants.MAX_ANGULAR_VELOCITY;
+    }
 
       else{
         if(Math.abs(value) < 0.15){
@@ -33,10 +37,9 @@ public class DriveTele extends CommandBase {
         }
         return value * Constants.DriveConstants.MAX_TANGENTIAL_VELOCITY;
       }
-    }
   }
 
-  public void driveFromChasis(ChassisSpeeds speeds){
+  public void driveFromChassis(ChassisSpeeds speeds){
     SwerveModuleState[] states = Constants.DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
     //gives it a cap, if you want speeds greater than you can ouput --> basically a clamp
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DriveConstants.MAX_TANGENTIAL_VELOCITY);
@@ -44,7 +47,7 @@ public class DriveTele extends CommandBase {
   }
 
   //doubleSupplier = double
-  private doubleSupplier fwd, str, rot;
+  private DoubleSupplier fwd, str, rot;
   private Drive drive;
 
   /**
@@ -53,7 +56,7 @@ public class DriveTele extends CommandBase {
    * @param subsystem The subsystem used by this command.
    */
   public DriveTele(DoubleSupplier fwd, DoubleSupplier str, DoubleSupplier rot, Drive drive) {
-    this.drive = drive;
+    this.m_drive = drive;
     this.fwd = fwd;
     this.str = str;
     this.rot = rot;

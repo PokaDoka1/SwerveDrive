@@ -17,7 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
  */
 public final class Constants {
     public static class OperatorConstants {
-        public static final int kDriverCControllerPort = 0;
+        public static final int kDriverControllerPort = 0;
     }
 
     public static class SwerveModulesConstants{
@@ -30,7 +30,7 @@ public final class Constants {
         public static final double TURN_GEAR_RATIO = 12.8;
         public static final double DRIVE_GEAR_RATIO = 10;
 
-        public static final double WHEEL_DIAMTER_METERS = 0.1016;
+        public static final double WHEEL_DIAMETER_METERS = 0.1016;
     }
 
     public static class DriveConstants{

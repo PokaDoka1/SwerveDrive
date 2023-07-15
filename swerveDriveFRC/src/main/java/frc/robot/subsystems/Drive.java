@@ -9,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Util.SwerveModule;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -53,7 +54,7 @@ public class Drive extends SubsystemBase {
     SwerveModulePosition rearLeftPosition = new SwerveModulePosition(rearLeft.getDrivePosition(), rearLeft.getTurnAngle());
     SwerveModulePosition rearRightPosition = new SwerveModulePosition(rearRight.getDrivePosition(), rearRight.getTurnAngle());
 
-    SwerveModulePosition[] modulePositions = [frontLeftPosition, frontRightPosition, rearLeftPosition, rearRightPosition];
+    SwerveModulePosition[] modulePositions = {frontLeftPosition, frontRightPosition, rearLeftPosition, rearRightPosition};
     return modulePositions;
   }
 

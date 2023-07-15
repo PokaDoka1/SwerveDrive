@@ -5,10 +5,9 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -35,8 +34,6 @@ public class SwerveModule{
 
 
     public SwerveModule(int drivePort, int turnPort, int encoderPort, double angleOffset, boolean isInverted){
-        //drivePort = ID of drive motor
-        //turnPort = ID of turn motor
         //angleOffset = offset of cancoders
 
         m_driveMotor = new CANSparkMax(drivePort, MotorType.kBrushless);
@@ -44,7 +41,7 @@ public class SwerveModule{
         m_canCoder = new CANCoder(encoderPort);
 
         m_driverController = m_driveMotor.getPIDController();
-        m_turnController = turnController.getPIDController();
+        m_turnController = m_turnMotor.getPIDController();
 
         m_driveEncoder = m_driveMotor.getEncoder();
         m_turnEncoder = m_turnMotor.getEncoder();
@@ -60,15 +57,15 @@ public class SwerveModule{
         //second argument (free limit) refers to how much amperage a motor can pull with no resistance.
         m_driveMotor.setSmartCurrentLimit(15, 15);
 
-        driverController.setP(SwerveModulesConstants.DRIVE_KP);
+        m_driverController.setP(SwerveModulesConstants.DRIVE_KP);
         //feedforward = static voltage 
         //voltage you add to give it a little boost
-        driverController.setFF(SwerveModulesConstants.DRIVE_KF);
+        m_driverController.setFF(SwerveModulesConstants.DRIVE_KF);
 
         m_turnMotor.setIdleMode(IdleMode.kBrake);
         m_turnMotor.setInverted(false);
         m_turnMotor.setSmartCurrentLimit(15,15);
-        turnController.setP(SwerveModulesConstants.TURN_KP);
+        m_turnController.setP(SwerveModulesConstants.TURN_KP);
 
         m_driveEncoder.setInverted(false);
         m_turnEncoder.setInverted(false);
@@ -79,8 +76,8 @@ public class SwerveModule{
         //sensor range is -180 to 180
         m_canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         //if cancoder stand still, it will reset back to 0, but now it will keep it's value
-        m_canCoder.configInitaliztionStrategy(SensorInitalizedStrategy.BootToAbsolutePosition);
-        m_canCoder.configMagnetOffest(angleOffset);
+        m_canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
+        m_canCoder.configMagnetOffset(angleOffset);
 
         //rotations * gear ratio
         //12.8 motor rotations 
@@ -96,27 +93,26 @@ public class SwerveModule{
 
         //wholeModule rotation * gear ratio 
         //conversion from degrees to steps --> rotations
-
-        turnController.setReference((turnSetpoint.getDegrees() / (360)) * SwerveModulesConstants.TURN_GEAR_RATIO, ControlType.kPosition);
+        m_turnController.setReference((turnSetpoint.getDegrees() / (360)) * SwerveModulesConstants.TURN_GEAR_RATIO, ControlType.kPosition);
     }
 
     public void setDriveVelocity(double metersPerSec){
         //rotations per minute
-        driveController.setReference(
+        m_driverController.setReference(
 
             //metres divided by circumference 
             //meters = rotations * circumference 
             //meters --> rotation
 
             //gear ratio * rotations per minute
-            Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO * (metersPerSec * 60) / (Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMTER_METERS),
+            Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO * (metersPerSec * 60) / (Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMETER_METERS),
             ControlType.kVelocity);
     }
 
     public void setState(SwerveModuleState state){
         //optimizing = gets path of least resistance 
         //state = velocity and turn setpoint
-        SwerveModuleState optimizedState = CtreUtils.optomize(state, getAngle());
+        SwerveModuleState optimizedState = CTREUtils.optimize(state, getTurnAngle());
         setDriveVelocity(optimizedState.speedMetersPerSecond);
         setTurnDegrees(state.angle);
     }
@@ -134,10 +130,10 @@ public class SwerveModule{
     public double getDrivePosition(){
         //meters 
         //rotations / gear ratio * circumference
-        return (m_driveEncoder.getPosition() / (Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO)) * Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMTER_METERS;
+        return (m_driveEncoder.getPosition() / (Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO)) * Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMETER_METERS;
     }
 
     public void rezeroTurnMotor(){
-       m_turnMotor.setPosition(m_canCoder.getAbsolutePosition() / (360)  * (SwerveModulesConstants.TURN_GEAR_RATIO));
+       m_turnEncoder.setPosition(m_canCoder.getAbsolutePosition() / (360)  * (SwerveModulesConstants.TURN_GEAR_RATIO));
     }
 }
