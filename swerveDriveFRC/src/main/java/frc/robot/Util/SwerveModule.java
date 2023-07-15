@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveModulesConstants;
@@ -115,6 +116,14 @@ public class SwerveModule{
         SwerveModuleState optimizedState = CTREUtils.optimize(state, getTurnAngle());
         setDriveVelocity(optimizedState.speedMetersPerSecond);
         setTurnDegrees(state.angle);
+    }
+
+    public SwerveModuleState getState(){
+        return new SwerveModuleState(getDriveVelocity(), getTurnAngle());
+    }
+
+    public SwerveModulePosition getModulePosition(){
+        return new SwerveModulePosition(getDrivePosition(), getTurnAngle());
     }
 
     public Rotation2d getTurnAngle(){

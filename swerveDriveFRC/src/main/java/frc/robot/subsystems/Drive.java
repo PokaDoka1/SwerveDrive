@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Util.SwerveModule;
 
 import com.kauailabs.navx.frc.AHRS;
-//import Util.swerveModule;
 
 public class Drive extends SubsystemBase {
 
@@ -38,7 +37,6 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
   }
 
   public void setModuleStates(SwerveModuleState[] states){
@@ -49,12 +47,7 @@ public class Drive extends SubsystemBase {
   }
 
   public SwerveModulePosition[] getModulePositions(){
-    SwerveModulePosition frontLeftPosition = new SwerveModulePosition(frontLeft.getDrivePosition(), frontLeft.getTurnAngle());
-    SwerveModulePosition frontRightPosition = new SwerveModulePosition(frontRight.getDrivePosition(), frontRight.getTurnAngle());
-    SwerveModulePosition rearLeftPosition = new SwerveModulePosition(rearLeft.getDrivePosition(), rearLeft.getTurnAngle());
-    SwerveModulePosition rearRightPosition = new SwerveModulePosition(rearRight.getDrivePosition(), rearRight.getTurnAngle());
-
-    SwerveModulePosition[] modulePositions = {frontLeftPosition, frontRightPosition, rearLeftPosition, rearRightPosition};
+    SwerveModulePosition[] modulePositions = {frontLeft.getModulePosition(), frontRight.getModulePosition(), rearLeft.getModulePosition(), rearRight.getModulePosition()};
     return modulePositions;
   }
 
@@ -67,7 +60,6 @@ public class Drive extends SubsystemBase {
   }
 
   public void logData(){
-    
   }
 
   @Override
