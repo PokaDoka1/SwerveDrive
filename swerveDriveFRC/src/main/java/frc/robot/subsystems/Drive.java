@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Util.SwerveModule;
 
 import com.kauailabs.navx.frc.AHRS;
@@ -28,6 +29,11 @@ public class Drive extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Drive() {
     m_gyro.reset();
+    m_gyro.calibrate();
+    
+    SmartDashboard.putNumber("Turn P", 0);
+    SmartDashboard.putNumber("Drive P", 0);
+    SmartDashboard.putNumber("Drive FF", 0);
   }
 
   public static Drive getInstance(){
@@ -37,9 +43,13 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    logData();
   }
 
   public void setModuleStates(SwerveModuleState[] states){
+    SmartDashboard.putNumber("front left desired velocity", states[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("front left desired angle", states[1].angle.getDegrees());
+
     frontLeft.setState(states[0]);
     frontRight.setState(states[1]);
     rearLeft.setState(states[2]);
@@ -60,6 +70,32 @@ public class Drive extends SubsystemBase {
   }
 
   public void logData(){
+    SmartDashboard.putNumber("Drive Velocity", frontRight.getDriveVelocity());
+    SmartDashboard.putNumber("Turn Angle", frontRight.getTurnAngle().getDegrees());
+
+    SmartDashboard.putNumber("Absolute Turn", frontRight.getAbsoluteTurnAngle().getDegrees());
+
+    SmartDashboard.putNumber("Gyro Degrees", m_gyro.getAngle());
+
+    SmartDashboard.putNumber("front left abs", frontLeft.getAbsoluteTurnAngle().getDegrees());
+    SmartDashboard.putNumber("front right abs", frontRight.getAbsoluteTurnAngle().getDegrees());
+    SmartDashboard.putNumber("rear left abs", rearLeft.getAbsoluteTurnAngle().getDegrees());
+    SmartDashboard.putNumber("rear right abs", rearRight.getAbsoluteTurnAngle().getDegrees());
+
+    SmartDashboard.putNumber("front left", frontLeft.getTurnAngle().getDegrees());
+    SmartDashboard.putNumber("front right", frontRight.getTurnAngle().getDegrees());
+    SmartDashboard.putNumber("rear left", rearLeft.getTurnAngle().getDegrees());
+    SmartDashboard.putNumber("rear right", rearRight.getTurnAngle().getDegrees());
+    
+
+
+  }
+
+  public void readConfigGains(){
+    frontLeft.configGains();
+    frontRight.configGains();
+    rearLeft.configGains();
+    rearRight.configGains();
   }
 
   @Override

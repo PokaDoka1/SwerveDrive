@@ -13,6 +13,7 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -43,7 +44,7 @@ public class DriveTele extends CommandBase {
     SwerveModuleState[] states = Constants.DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
     //gives it a cap, if you want speeds greater than you can ouput --> basically a clamp
     SwerveDriveKinematics.desaturateWheelSpeeds(states, Constants.DriveConstants.MAX_TANGENTIAL_VELOCITY);
-    drive.setModuleStates(states);
+    m_drive.setModuleStates(states);
   }
 
   //doubleSupplier = double
@@ -77,7 +78,7 @@ public class DriveTele extends CommandBase {
 
     //makes everything like a 3rd person robot
     //might have to add - in front 
-    driveFromChassis(ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, omega, drive.getDriveHeading()));
+    driveFromChassis(ChassisSpeeds.fromFieldRelativeSpeeds(vx, vy, omega, m_drive.getDriveHeading()));
   }
 
   // Called once the command ends or is interrupted.

@@ -27,6 +27,10 @@ public class Tracker extends SubsystemBase {
     SmartDashboard.putData("Field", field);
   }
 
+  public static Tracker getInstance(){
+    return instance;
+  }
+
   public void updatePose(){
     odometry.update(drive.getDriveHeading(), drive.getModulePositions());
     field.setRobotPose(odometry.getPoseMeters());

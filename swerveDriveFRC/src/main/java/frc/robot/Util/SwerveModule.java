@@ -1,13 +1,11 @@
 package frc.robot.Util;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import com.ctre.phoenix.sensors.SensorInitializationStrategy;
 
 import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.SensorInitializationStrategy;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
@@ -17,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.SwerveModulesConstants;
 
@@ -68,8 +67,8 @@ public class SwerveModule{
         m_turnMotor.setSmartCurrentLimit(15,15);
         m_turnController.setP(SwerveModulesConstants.TURN_KP);
 
-        m_driveEncoder.setInverted(false);
-        m_turnEncoder.setInverted(false);
+        //m_driveEncoder.setInverted(false);
+        //m_turnEncoder.setInverted(false);
         
         m_driveEncoder.setPosition(0);
         m_turnEncoder.setPosition(0);
@@ -86,7 +85,7 @@ public class SwerveModule{
         //getAbsolutePosition = degrees
         //degrees = 360 = fraction 
         //turnGearRatio = number of turns the motor must go through to turn wheel one rotation.
-        m_turnEncoder.setPosition((m_canCoder.getAbsolutePosition() / (360))  * (SwerveModulesConstants.TURN_GEAR_RATIO));
+        //m_turnEncoder.setPosition((m_canCoder.getAbsolutePosition() / (360))  * (SwerveModulesConstants.TURN_GEAR_RATIO));
     }
 
     public void setTurnDegrees(Rotation2d turnSetpoint){
@@ -94,11 +93,16 @@ public class SwerveModule{
 
         //wholeModule rotation * gear ratio 
         //conversion from degrees to steps --> rotations
-        m_turnController.setReference((turnSetpoint.getDegrees() / (360)) * SwerveModulesConstants.TURN_GEAR_RATIO, ControlType.kPosition);
+        m_turnController.setReference((turnSetpoint.getRotations()) * SwerveModulesConstants.TURN_GEAR_RATIO, ControlType.kPosition);
     }
 
     public void setDriveVelocity(double metersPerSec){
         //rotations per minute
+
+        if(metersPerSec == 0){
+            m_driveMotor.set(0);
+        }
+        
         m_driverController.setReference(
 
             //metres divided by circumference 
@@ -106,7 +110,7 @@ public class SwerveModule{
             //meters --> rotation
 
             //gear ratio * rotations per minute
-            Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO * (metersPerSec * 60) / (Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMETER_METERS),
+            Constants.SwerveModulesConstants.DRIVE_GEAR_RATIO * ((metersPerSec * 60) / (Math.PI * Constants.SwerveModulesConstants.WHEEL_DIAMETER_METERS)),
             ControlType.kVelocity);
     }
 
@@ -115,7 +119,7 @@ public class SwerveModule{
         //state = velocity and turn setpoint
         SwerveModuleState optimizedState = CTREUtils.optimize(state, getTurnAngle());
         setDriveVelocity(optimizedState.speedMetersPerSecond);
-        setTurnDegrees(state.angle);
+        setTurnDegrees(optimizedState.angle);
     }
 
     public SwerveModuleState getState(){
@@ -128,6 +132,10 @@ public class SwerveModule{
 
     public Rotation2d getTurnAngle(){
         return Rotation2d.fromRotations(m_turnEncoder.getPosition() / Constants.SwerveModulesConstants.TURN_GEAR_RATIO);
+    }
+
+    public Rotation2d getAbsoluteTurnAngle(){
+        return Rotation2d.fromDegrees(m_canCoder.getAbsolutePosition());
     }
 
     public double getDriveVelocity(){
@@ -144,5 +152,12 @@ public class SwerveModule{
 
     public void rezeroTurnMotor(){
        m_turnEncoder.setPosition(m_canCoder.getAbsolutePosition() / (360)  * (SwerveModulesConstants.TURN_GEAR_RATIO));
+    }
+
+    public void configGains(){
+        m_turnController.setP(SmartDashboard.getNumber("Turn P", 0));
+        m_driverController.setP(SmartDashboard.getNumber("Drive P", 0));
+
+        m_driverController.setFF(SmartDashboard.getNumber("Drive FF", 0));
     }
 }
