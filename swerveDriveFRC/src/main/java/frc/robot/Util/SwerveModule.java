@@ -40,6 +40,7 @@ public class SwerveModule{
         m_turnMotor = new CANSparkMax(turnPort, MotorType.kBrushless);
         m_canCoder = new CANCoder(encoderPort);
 
+        //create PID controllers
         m_driverController = m_driveMotor.getPIDController();
         m_turnController = m_turnMotor.getPIDController();
 
@@ -76,6 +77,7 @@ public class SwerveModule{
         //sensor range is -180 to 180
         m_canCoder.configAbsoluteSensorRange(AbsoluteSensorRange.Signed_PlusMinus180);
         //if cancoder stand still, it will reset back to 0, but now it will keep it's value
+        //????
         m_canCoder.configSensorInitializationStrategy(SensorInitializationStrategy.BootToAbsolutePosition);
         m_canCoder.configMagnetOffset(angleOffset);
 

@@ -22,10 +22,10 @@ public final class Constants {
 
     public static class SwerveModulesConstants{
 
-        public static final double DRIVE_KP = 0;
-        public static final double DRIVE_KF = 0;
+        public static final double DRIVE_KP = 0;//0.000016;
+        public static final double DRIVE_KF = 0;//0.000175;
 
-        public static final double TURN_KP = 0;
+        public static final double TURN_KP = 0;//0.06;
 
         public static final double TURN_GEAR_RATIO = 12.8;
         public static final double DRIVE_GEAR_RATIO = 6.75;
@@ -38,6 +38,7 @@ public final class Constants {
         public static final double WHEELBASE_WIDTH = 0.5969;
         public static final double WHEELBASE_LENGTH = 0.5969;
 
+        //Center of robot is (0,0) so the locations of wheels are half width and half lenth away
         public static final Translation2d FRONT_LEFT_MODULE_POSITION = new Translation2d(WHEELBASE_WIDTH/2,WHEELBASE_LENGTH/2);
         public static final Translation2d REAR_LEFT_MODULE_POSITION = new Translation2d(-WHEELBASE_WIDTH/2,WHEELBASE_LENGTH/2);
         public static final Translation2d FRONT_RIGHT_MODULE_POSITION = new Translation2d(WHEELBASE_WIDTH/2,-WHEELBASE_LENGTH/2);
@@ -60,10 +61,10 @@ public final class Constants {
         public static final int FRONT_LEFT_ENCODER_PORT = 11;
         public static final int REAR_LEFT_ENCODER_PORT = 10;
 
-        public static final double REAR_RIGHT_ENCODER_OFFSET = 129.28;//-97.3;//178.857;//174.0234375;//11.162109375;//2.724609375;
-        public static final double FRONT_RIGHT_ENCODER_OFFSET =  147.74;//-167;//-4.219;//176.1328125;//-110.830078125 ;// -111.263671875;
-        public static final double FRONT_LEFT_ENCODER_OFFSET = -78.57;//-168.1;//-169.277;//-4.74609375;//-6.328125;//6-2.263671875;
-        public static final double REAR_LEFT_ENCODER_OFFSET = 158.29;//-107;
+        public static final double REAR_RIGHT_ENCODER_OFFSET = 129.19;//129.28;//-97.3;//178.857;//174.0234375;//11.162109375;//2.724609375;
+        public static final double FRONT_RIGHT_ENCODER_OFFSET =  147.65;//147.74;//-167;//-4.219;//176.1328125;//-110.830078125 ;// -111.263671875;
+        public static final double FRONT_LEFT_ENCODER_OFFSET = -78.4;//-78.57;//-168.1;//-169.277;//-4.74609375;//-6.328125;//6-2.263671875;
+        public static final double REAR_LEFT_ENCODER_OFFSET = 158.20;//158.29;//-107;
 
         //how fast you can move forward
         public static final double MAX_TANGENTIAL_VELOCITY = 4;
